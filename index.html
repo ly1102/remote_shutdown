@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name=viewport content="width=device-width,initial-scale=1">
+    <title>远程控制关机/睡眠</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/iview/3.1.5/styles/iview.css">
+    <script src="https://cdn.bootcss.com/vue/2.5.21/vue.min.js"></script>
+    <script src="https://cdn.bootcss.com/iview/3.1.5/iview.min.js"></script>
+</head>
+<body>
+<div id="app" style="margin: auto">
+    <template>
+        <div style="padding: 10px;background: #f8f8f9">
+            <Card title="操作" icon="ios-options" shadow
+                  style="max-width: 500px; margin: auto">
+                <div slot="extra">
+                    <a href="https://github.com/ly1102/remote_shutdown" type="extra">
+                        <Icon type="logo-github" size="20"/>
+                    </a>
+                </div>
+
+                <CellGroup @click="handleClickItem()">
+                    <Cell title="选择下方内容进行对应设置"></Cell>
+                    <Cell title="立即关机">
+                        <i-Button type="error" slot="extra" icon="md-alert" @click="shutdown_now()">立即关机</i-Button>
+                    </Cell>
+                    <Cell title="定时关机">
+                        <i-Button type="error" slot="extra" icon="md-alarm" @click="shutdown_timing()" ghost>定时关机
+                        </i-Button>
+                    </Cell>
+                    <Cell title="立即睡眠">
+                        <i-Button type="warning" slot="extra" icon="md-alert" @click="sleep_now()">立即睡眠</i-Button>
+                    </Cell>
+                    <Cell title="定时睡眠">
+                        <i-Button type="warning" slot="extra" icon="md-alarm" @click="sleep_timing()" ghost>定时睡眠
+                        </i-Button>
+                    </Cell>
+                    <Cell title="账号密码">
+                        <i-Button type="primary" slot="extra" @click="set_user()">修改账号密码</i-Button>
+                    </Cell>
+                    <Cell title="开机自启动" label="建议开启，以便随时使用">
+                        <i-Switch v-model="switchValue" :loading="switch_loading" @on-change="switch_change()"
+                                  slot="extra" size="large"/>
+                    </Cell>
+                </CellGroup>
+            </Card>
+        </div>
+    </template>
+    <template>
+        <Modal v-model="check_modal" width="360">
+            <div :style="'color:'+color+';text-align:center; font-size:25px;'">
+                <Icon type="ios-information-circle"></Icon>
+                <span v-html="check_msg"></span>
+            </div>
+            <div slot="footer">
+                <i-Button :type="check_submit_btn" size="large" :loading="modal_loading" @click="submit_now()">确认
+                </i-Button>
+                <i-Button type="default" size="large" @click="check_modal=modal_loading=false">取消</i-Button>
+            </div>
+        </Modal>
+    </template>
+
+    <template>
+        <Modal :title="timing_msg" v-model="timing_modal" :mask-closable="false">
+            <div>
+                <h1>{{ timing_msg }}</h1>
+                <p>
+                    <template>
+                        选择时间
+                        <Date-Picker v-model="timing_time" type="datetime" format="yyyy-MM-dd HH:mm"
+                                     placeholder="Select date and time(Excluding seconds)"></Date-Picker>
+                    </template>
+                </p>
+            </div>
+            <div slot="footer">
+                <i-Button type="warning" size="large" :loading="modal_loading" @click="submit_timing()">确认</i-Button>
+                <i-Button type="default" size="large" @click="timing_modal=false">取消</i-Button>
+            </div>
+        </Modal>
+    </template>
+
+    <template>
+        <Modal title="设置访问账号密码" v-model="user_modal" :mask-closable="false">
+            <div style="width:300px;">
+                <label>
+                    账号：
+                    <i-Input v-model="username" placeholder="请输入账户名" clearable style="width: 200px;"></i-Input>
+                </label>
+                <br/>
+                <label>
+                    密码：
+                    <i-Input v-model="password" placeholder="请输入密码" clearable style="width: 200px;"></i-Input>
+                </label>
+            </div>
+            <div slot="footer">
+                <i-Button type="warning" size="large" :loading="modal_loading" @click="submit_user()">确认</i-Button>
+                <i-Button type="default" size="large" @click="user_modal=false">取消</i-Button>
+            </div>
+        </Modal>
+    </template>
+</div>
+</body>
+<script type="text/javascript">
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                switchValue: false,
+                check_modal: false,
+                timing_modal: false,
+                user_modal: false,
+                modal_loading: false,
+                timing_loading: false,
+                switch_loading: false,
+                now_operation: '',
+                timing_time: new Date(),
+                timing_operation: 'shutdown',
+                check_msg: '确认立即关机吗？',
+                warning: '#ff9900',
+                error: '#f60',
+                color: '#ff9900',
+                check_submit_btn: 'warning',
+                timing_msg: '定时关机',
+                username: '',
+                password: '',
+            }
+        },
+        'methods': {
+            shutdown_now() {
+                this.check_modal = true;
+                this.check_msg = '确认立即关机吗？<br/>确认后无法取消哦！';
+                this.color = '#f60';
+                this.check_submit_btn = 'error';
+                this.now_operation = 'shutdown';
+            },
+            sleep_now() {
+                this.check_modal = true;
+                this.check_msg = '确认立即睡眠吗？<br/>&emsp;&emsp;确认后无法取消哦！';
+                this.color = '#f90';
+                this.check_submit_btn = 'warning';
+                this.now_operation = 'sleep';
+            },
+            submit_now() {
+                this.modal_loading = true;
+                setTimeout(() => {
+                    if (this.modal_loading) {
+                        this.modal_loading = false;
+                        this.check_modal = false;
+                    }
+                }, 2000);
+            },
+            shutdown_timing() {
+                this.timing_modal = true;
+                this.timing_msg = "定时关机";
+                this.timing_operation = 'shutdown';
+            },
+            sleep_timing() {
+                this.timing_modal = true;
+                this.timing_msg = "定时睡眠";
+                this.timing_operation = 'sleep';
+            },
+            submit_timing() {
+                this.modal_loading = true;
+                setTimeout(() => {
+                    if (this.modal_loading) {
+                        this.modal_loading = false;
+                        this.timing_modal = false;
+                    }
+                }, 2000);
+            },
+            set_user() {
+                this.user_modal = true;
+            },
+            submit_user() {
+                this.modal_loading = true;
+                setTimeout(() => {
+                    if (this.modal_loading) {
+                        this.modal_loading = false;
+                        this.user_modal = false;
+                    }
+                }, 2000);
+            },
+
+            switch_change() {
+                this.switch_loading = true;
+                console.log(this.switchValue);
+                if (!this.switchValue) {
+                    setTimeout(() => {
+                        this.switch_loading = false;
+                        this.switchValue = false;
+                    }, 2000);
+                } else {
+                    setTimeout(() => {
+                        this.switch_loading = false;
+                        this.switchValue = true;
+                    }, 2000);
+                }
+            },
+        }
+    })
+</script>
+</html>
