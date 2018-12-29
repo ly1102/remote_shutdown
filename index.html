@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdn.bootcss.com/iview/3.1.5/styles/iview.css">
     <script src="https://cdn.bootcss.com/vue/2.5.21/vue.min.js"></script>
     <script src="https://cdn.bootcss.com/iview/3.1.5/iview.min.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
 </head>
 <body>
 <div id="app" style="margin: auto">
@@ -21,7 +22,13 @@
                 </div>
 
                 <CellGroup @click="handleClickItem()">
-                    <Cell title="选择下方内容进行对应设置"></Cell>
+                    <template v-for="(task, index) in init.tasks">
+                        <Cell :title="task.operation" :label="task.time">
+                            <i-Button type="warning" slot="extra" :loading="task.loading"
+                                      @click="cancel_timing(task, index)">取消
+                            </i-Button>
+                        </Cell>
+                    </template>
                     <Cell title="立即关机">
                         <i-Button type="error" slot="extra" icon="md-alert" @click="shutdown_now()">立即关机</i-Button>
                     </Cell>
@@ -40,7 +47,7 @@
                         <i-Button type="primary" slot="extra" @click="set_user()">修改账号密码</i-Button>
                     </Cell>
                     <Cell title="开机自启动" label="建议开启，以便随时使用">
-                        <i-Switch v-model="switchValue" :loading="switch_loading" @on-change="switch_change()"
+                        <i-Switch v-model="init.self_starting" :loading="switch_loading" @on-change="switch_change()"
                                   slot="extra" size="large"/>
                     </Cell>
                 </CellGroup>
@@ -82,7 +89,11 @@
 
     <template>
         <Modal title="设置访问账号密码" v-model="user_modal" :mask-closable="false">
-            <div style="width:300px;">
+            <div style="width:300px; margin: auto;">
+                <div v-if="init">
+                    第一次使用，请先添加访问的账号密码，防止别人恶意操作电脑。
+                    如果不添加，则<strong>任何人</strong>都可以访问该网页。
+                </div>
                 <label>
                     账号：
                     <i-Input v-model="username" placeholder="请输入账户名" clearable style="width: 200px;"></i-Input>
@@ -104,13 +115,28 @@
 <script type="text/javascript">
     new Vue({
         el: '#app',
+        created() {
+            if (this.init.init) {
+                this.user_modal = true;
+            }
+        },
         data() {
             return {
-                switchValue: false,
+                init: {
+                    init: true,
+                    tasks: [
+                        {'operation': '关机', 'time': "12-29 00:00", 'loading': false},
+                        {'operation': '睡眠', 'time': "12-31 10:00", 'loading': false},
+                    ],
+                    self_starting: false,
+                },
+                username: '',
+                password: '',
                 check_modal: false,
                 timing_modal: false,
                 user_modal: false,
                 modal_loading: false,
+                btn_loading: false,
                 timing_loading: false,
                 switch_loading: false,
                 now_operation: '',
@@ -122,11 +148,29 @@
                 color: '#ff9900',
                 check_submit_btn: 'warning',
                 timing_msg: '定时关机',
-                username: '',
-                password: '',
             }
         },
         'methods': {
+            cancel_timing(task, index) {
+                task.loading = true;
+                var this_ = this;
+                axios.post('/delete_timing', {
+                    time: task.time,
+                    operation: task.operation,
+                }).then(function (response) {
+                    console.log(response);
+                    if (response.data.status === 'ok') {
+                        this_.init.tasks.splice(index, 1)
+                    } else {
+                        alert(response.data.msg);
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                    alert('请求遇到了错误:' + error)
+                });
+                task.loading = false;
+            },
+
             shutdown_now() {
                 this.check_modal = true;
                 this.check_msg = '确认立即关机吗？<br/>确认后无法取消哦！';
@@ -143,12 +187,21 @@
             },
             submit_now() {
                 this.modal_loading = true;
-                setTimeout(() => {
-                    if (this.modal_loading) {
-                        this.modal_loading = false;
-                        this.check_modal = false;
+                var this_ = this;
+                axios.post('/operation', {
+                    operation: this.now_operation,
+                }).then(function (response) {
+                    console.log(response);
+                    if (response.data.status === 'ok') {
+                        this_.check_modal = false;
+                    } else {
+                        alert(response.data.msg);
                     }
-                }, 2000);
+                }).catch(function (error) {
+                    console.log(error);
+                    alert('请求遇到了错误:' + error);
+                });
+                this.modal_loading = false;
             },
             shutdown_timing() {
                 this.timing_modal = true;
@@ -162,39 +215,84 @@
             },
             submit_timing() {
                 this.modal_loading = true;
-                setTimeout(() => {
-                    if (this.modal_loading) {
-                        this.modal_loading = false;
-                        this.timing_modal = false;
+                var this_ = this;
+                axios.post('/timing', {
+                    time: this.timing_time,
+                    operation: this.timing_operation,
+                }).then(function (response) {
+                    console.log(response);
+                    if (response.data.status === 'ok') {
+                        this_.timing_modal = false;
+                    } else {
+                        alert(response.data.msg);
                     }
-                }, 2000);
+                }).catch(function (error) {
+                    console.log(error);
+                    alert('请求遇到了错误:' + error)
+                });
+                this.modal_loading = false;
             },
             set_user() {
                 this.user_modal = true;
             },
             submit_user() {
                 this.modal_loading = true;
-                setTimeout(() => {
-                    if (this.modal_loading) {
-                        this.modal_loading = false;
+                axios.post('/user', {
+                    username: this.username,
+                    password: this.password,
+                }).then(function (response) {
+                    console.log(response);
+                    if (response.data.status === 'ok') {
                         this.user_modal = false;
+                    } else {
+                        alert(response.data.msg);
                     }
-                }, 2000);
+                }).catch(function (error) {
+                    console.log(error);
+                    alert('请求遇到了错误:' + error)
+                });
+                this.modal_loading = false;
             },
 
             switch_change() {
                 this.switch_loading = true;
-                console.log(this.switchValue);
-                if (!this.switchValue) {
-                    setTimeout(() => {
-                        this.switch_loading = false;
-                        this.switchValue = false;
-                    }, 2000);
+                console.log(this.init.self_starting);
+                var this_ = this;
+                if (!this.init.self_starting) {
+                    alert(123);
+                    axios.post('/starting', {
+                        self_starting: this.init.self_starting,
+                    }).then(function (response) {
+                        console.log(response);
+                        if (response.data.status === 'ok') {
+                            this_.init.self_starting = false;
+                        } else {
+                            alert(response.data.msg);
+                            this_.init.self_starting = true;
+                        }
+                    }).catch(function (error) {
+                        console.log(error);
+                        alert('请求遇到了错误:' + error);
+                        this_.init.self_starting = true;
+                    });
+                    this.switch_loading = false;
                 } else {
-                    setTimeout(() => {
-                        this.switch_loading = false;
-                        this.switchValue = true;
-                    }, 2000);
+                    axios.post('/starting', {
+                        self_starting: this.init.self_starting,
+                    }).then(function (response) {
+                        console.log(response);
+                        if (response.data.status === 'ok') {
+                            this_.init.self_starting = true;
+                        } else {
+                            alert(response.data.msg);
+                            this_.init.self_starting = false;
+                        }
+                    }).catch(function (error) {
+                        console.log(error);
+                        alert('请求遇到了错误:' + error);
+                        this_.init.self_starting = false;
+                    });
+                    this.switch_loading = false;
                 }
             },
         }
