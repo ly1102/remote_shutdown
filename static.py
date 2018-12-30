@@ -236,7 +236,7 @@ html = """
 
                 <CellGroup @click="handleClickItem()">
                     <template v-for="(task, index) in init.tasks">
-                        <Cell :title="task.name" :label="task.time">
+                        <Cell :title="task.operation" :label="task.time">
                             <i-Button type="warning" slot="extra" :loading="task.loading"
                                       @click="cancel_timing(task, index)">取消
                             </i-Button>
@@ -262,6 +262,12 @@ html = """
                     <Cell title="开机自启动" label="建议开启，以便随时使用">
                         <i-Switch v-model="init.self_starting" :loading="switch_loading" @on-change="switch_change()"
                                   slot="extra" size="large"/>
+                    </Cell>
+                    <Cell title="访问地址" label="点击查看手机访问网页的链接">
+                        <i-Button type="primary" slot="extra" @click="ip_modal=true">查看</i-Button>
+                    </Cell>
+                    <Cell title="关闭软件" label="点击后软件将关闭，网页会失去响应">
+                        <i-Button type="error" slot="extra" @click="shutdown_server()">关闭本软件</i-Button>
                     </Cell>
                 </CellGroup>
             </Card>
@@ -304,7 +310,8 @@ html = """
         <Modal title="设置访问账号密码" v-model="user_modal" :mask-closable="false">
             <div style="width:300px; margin: auto;">
                 <div v-if="init">
-                    第一次使用，请先添加访问的账号密码，防止别人恶意操作电脑
+                    第一次使用，请先添加访问的账号密码，防止别人恶意操作电脑。
+                    如果不添加，则<strong>任何人</strong>都可以访问该网页。
                 </div>
                 <label>
                     账号：
@@ -322,6 +329,30 @@ html = """
             </div>
         </Modal>
     </template>
+
+    <template>
+        <Modal title="查看可以访问的IP" v-model="ip_modal">
+            <div style="min-width:300px; margin: auto;">
+                <table style="width:300px;text-align: left;font-size:18px; margin: auto;">
+                    <tr>
+                        <th>网络名</th>
+                        <th>访问地址</th>
+                    </tr>
+                    <tbody>
+                    <template v-for="ipi in ip_info">
+                        <tr style="margin-top: 5px;">
+                            <td>{{ ipi.name }}</td>
+                            <td>{{ ipi.addr }}</td>
+                        </tr>
+                    </template>
+                    </tbody>
+                </table>
+            </div>
+            <div slot="footer">
+                <i-Button type="default" size="large" @click="ip_modal=false">关闭</i-Button>
+            </div>
+        </Modal>
+    </template>
 </div>
 </body>
 <script type="text/javascript">
@@ -331,40 +362,51 @@ html = """
             if (this.init.init) {
                 this.user_modal = true;
             }
+            var this_ = this;
+            setTimeout(function () {
+                this_.check_starting();
+            }, 800);
         },
         data() {
             return {
                 init: %s,
+                ip_info: [
+                    {'name': '本地连接', 'addr': 'http://127.0.0.1:8888'},
+                ],
                 username: '',
                 password: '',
+                is_shutdown_server: false,
                 check_modal: false,
                 timing_modal: false,
                 user_modal: false,
+                ip_modal: false,
                 modal_loading: false,
                 btn_loading: false,
                 timing_loading: false,
                 switch_loading: false,
                 now_operation: '',
                 timing_time: new Date(),
-                timing_operation: 'shutdown',
                 check_msg: '确认立即关机吗？',
                 warning: '#ff9900',
                 error: '#f60',
                 color: '#ff9900',
                 check_submit_btn: 'warning',
                 timing_msg: '定时关机',
+                shutdown_info: '关闭软件',
             }
         },
-        'methods': {
+        methods: {
             cancel_timing(task, index) {
                 task.loading = true;
                 var this_ = this;
-                axios.post('/delete', {
+                axios.post('/delete_timing', {
                     time: task.time,
+                    operation: task.operation,
                 }).then(function (response) {
                     console.log(response);
                     if (response.data.status === 'ok') {
-                        this_.init.tasks.splice(index, 1)
+                        this_.init.tasks.splice(index, 1);
+                        this_.$Message.success('任务已经成功取消。');
                     } else {
                         alert(response.data.msg);
                     }
@@ -382,6 +424,13 @@ html = """
                 this.check_submit_btn = 'error';
                 this.now_operation = 'shutdown';
             },
+            shutdown_server() {
+                this.check_modal = true;
+                this.check_msg = '确认关闭软件吗？<br/>软件在下一次开启前不能用，定时计划也不能完成哦！';
+                this.color = '#f60';
+                this.check_submit_btn = 'error';
+                this.now_operation = 'shutdown_server';
+            },
             sleep_now() {
                 this.check_modal = true;
                 this.check_msg = '确认立即睡眠吗？<br/>&emsp;&emsp;确认后无法取消哦！';
@@ -392,20 +441,50 @@ html = """
             submit_now() {
                 this.modal_loading = true;
                 var this_ = this;
-                axios.post('/operation', {
-                    operation: this.now_operation,
-                }).then(function (response) {
-                    console.log(response);
-                    if (response.data.status === 'ok') {
-                        this_.check_modal = false;
-                    } else {
-                        alert(response.data.msg);
-                    }
-                }).catch(function (error) {
-                    console.log(error);
-                    alert('请求遇到了错误:' + error);
-                });
+                if (this.now_operation === 'shutdown_server') {
+                    axios.post('/shutdown', {})
+                        .then(function (response) {
+                        console.log(response);
+                        if (response.data.status === 'ok') {
+                            this_.check_modal = false;
+                            this_.shutdown_info = "5s";
+                            this_.$Message.success('请求成功！软件在5秒后关闭。');
+                            this_.refresh_shutdown(5, this_);
+                        } else {
+                            alert(response.data.msg);
+                        }
+                    }).catch(function (error) {
+                        console.log(error);
+                        alert('请求遇到了错误:' + error);
+                    });
+                } else {
+                    axios.post('/operation', {
+                        operation: this.now_operation,
+                    }).then(function (response) {
+                        console.log(response);
+                        if (response.data.status === 'ok') {
+                            this_.check_modal = false;
+                            this_.$Message.success('请求成功，请注意观察电脑状态！');
+                        } else {
+                            alert(response.data.msg);
+                        }
+                    }).catch(function (error) {
+                        console.log(error);
+                        alert('请求遇到了错误:' + error);
+                    });
+                }
+
                 this.modal_loading = false;
+            },
+            refresh_shutdown(seconds, this_){
+                this_.shutdown_info = seconds + 's';
+                if(seconds === 0){
+                    this_.shutdown_info = '软件已关闭';
+                }else{
+                    setTimeout(function () {
+                        this_.refresh_shutdown(seconds-1);
+                    }, 1000);
+                }
             },
             shutdown_timing() {
                 this.timing_modal = true;
@@ -420,12 +499,14 @@ html = """
             submit_timing() {
                 this.modal_loading = true;
                 var this_ = this;
-                axios.post('/timing_operation', {
+                axios.post('/timing', {
                     time: this.timing_time,
                     operation: this.timing_operation,
                 }).then(function (response) {
                     console.log(response);
                     if (response.data.status === 'ok') {
+                        this_.$Message.success('定时任务安排成功！');
+                        this_.init.tasks.push({'operation': response.data.operation, 'time': response.data.time});
                         this_.timing_modal = false;
                     } else {
                         alert(response.data.msg);
@@ -448,6 +529,7 @@ html = """
                     console.log(response);
                     if (response.data.status === 'ok') {
                         this.user_modal = false;
+                        this_.$Message.success('账号密码已经成功修改！');
                     } else {
                         alert(response.data.msg);
                     }
@@ -470,6 +552,7 @@ html = """
                         console.log(response);
                         if (response.data.status === 'ok') {
                             this_.init.self_starting = false;
+                            this_.$Message.success('开机启动已取消！');
                         } else {
                             alert(response.data.msg);
                             this_.init.self_starting = true;
@@ -487,6 +570,7 @@ html = """
                         console.log(response);
                         if (response.data.status === 'ok') {
                             this_.init.self_starting = true;
+                            this_.$Message.success('开机启动已设置成功！');
                         } else {
                             alert(response.data.msg);
                             this_.init.self_starting = false;
@@ -498,6 +582,24 @@ html = """
                     });
                     this.switch_loading = false;
                 }
+            },
+
+
+            check_starting() {
+                this.switch_loading = true;
+                var this_ = this;
+                axios.get('/check_self_starting')
+                    .then(function (response) {
+                        if (response.data.status === 'ok') {
+                            this_.init.self_starting = response.data.self_starting;
+                        } else {
+                            alert(response.data.msg);
+                        }
+                    }).catch(function (error) {
+                    console.log(error);
+                    alert('请求遇到了错误:' + error)
+                });
+                this.switch_loading = false;
             },
         }
     })
