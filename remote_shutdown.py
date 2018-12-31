@@ -1,17 +1,16 @@
 # -*- coding:utf-8 -*-
 # date: 2018-12-25 14:35
 import os
+import sys
 import json
 import time
-import ctypes
 import psutil
-import winreg
 import datetime
-import getpass
+import winshell
 import subprocess
 import webbrowser
 from win32com.client import Dispatch
-from static import html
+from static import html, jianshu
 from base64 import b64decode
 from threading import Thread
 from http.server import HTTPServer, BaseHTTPRequestHandler
@@ -19,6 +18,9 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 default_config = {'init': True, 'port': 8888, 'error': None,
                   'tasks': [], 'self_starting': False,
                   'username': '', 'password': ''}
+
+link_path = os.path.join(os.path.dirname(winshell.desktop()),
+                         r"AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup")
 
 
 def read_config():
@@ -29,6 +31,7 @@ def read_config():
             config = fp.read()
             return json.loads(config)
     except Exception as e:
+        write_config()
         return default_config
 
 
@@ -48,13 +51,18 @@ class TaskThread(Thread):
     def run(self):
         while True:
             if global_config['tasks']:
-                for task in global_config['tasks']:
-                    task_time = datetime.datetime.strptime(task['time'], "%m-%d %H:%M")
+                for index, task in enumerate(global_config['tasks']):
+                    task_time = datetime.datetime.strptime(task['time'], "%Y-%m-%d %H:%M")
                     now = datetime.datetime.now()
-                    if task_time.month == now.month and task_time.day == now.day and task_time.hour == now.hour and task_time.minute == now.minute:
-                        if task['operation'] == 'shutdown':
+                    if task_time.month == now.month and task_time.day == now.day and \
+                            task_time.hour == now.hour and task_time.minute == now.minute:
+                        if task['operation'] in ['关机', 'shutdown']:
+                            global_config['tasks'].pop(index)
+                            write_config()
                             exc_operation('shutdown')
-                        elif task['operation'] == 'sleep':
+                        elif task['operation'] in ['睡眠', 'sleep']:
+                            global_config['tasks'].pop(index)
+                            write_config()
                             exc_operation('sleep')
             else:
                 return
@@ -75,44 +83,48 @@ class MyHttpHandler(BaseHTTPRequestHandler):
         # self.config = config
         self.params = {}
         # self.server = server
-        self.authencate = b"""<HTML><HEAD><TITLE>401 Unauthorized</TITLE></HEAD>
+        self.authenticate = b"""<HTML><HEAD><TITLE>401 Unauthorized</TITLE></HEAD>
                          <BODY BGCOLOR="#cc9999"><H4>401 Unauthorized</H4>
                              Authorization required.
                          </BODY></HTML>"""
         super().__init__(request, client_address, server)
 
     def do_GET(self):
-        # print(self.headers, type(self.headers), self.headers.getallmatchingheaders('Authorization'))
-        if 'Authorization' not in self.headers and not global_config['init']:
-            self.send_response(401)
-            self.send_header('Content-type', 'text/html')
-            self.send_header('WWW-Authenticate', 'Basic realm="pikaqiu"')
+        path = self.path
+        if path == '/jianshu':
+            self.send_response(200)
+            self.send_header('Content-type', 'image/x-icon')
             self.end_headers()
-            self.wfile.write(self.authencate)
+            self.wfile.write(jianshu)
+            return
+        if 'Authorization' not in self.headers and not global_config['init']:
+            self.authenticate_response()
+            return
         else:
-            authorization = self.headers.get('Authorization', '')
-            if authorization and authorization[:6] == 'Basic ':
-                user, password = b64decode(authorization[6:]).split(b':', 1)
-                if user.decode() == global_config['username'] and password.decode() == global_config['password']:
-                    self.send_response(200)
-                    self.send_header('Content-type', 'text/html')
-                    self.end_headers()
-                    self.wfile.write((html % json.dumps(global_config)).encode())
-                else:
-                    path = self.path
-                    if path == '/':
-                        self.send_response(401)
-                        self.send_header('Content-type', 'text/html')
-                        self.send_header('WWW-Authenticate', 'Basic realm="pikaqiu"')
-                        self.end_headers()
-                        self.wfile.write(self.authencate)
-                    elif path == '/check_self_starting':
-                        self.check_self_starting()
-                    elif path == '/get_ip':
-                        self.get_ip()
-                    else:
-                        self.json_response({'status': 'fail', 'msg': '未知的路径 {}'.format(path)})
+            if not global_config['init']:
+                authorization = self.headers.get('Authorization', '')
+                if authorization and authorization[:6] == 'Basic ':
+                    user, password = b64decode(authorization[6:]).split(b':', 1)
+                    if user.decode() != global_config['username'] or password.decode() != global_config['password']:
+                        self.authenticate_response()
                         return
+                else:
+                    self.authenticate_response()
+                    return
+
+            if path == '/':
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+                self.wfile.write((html % json.dumps(global_config)).encode())
+                global_config['error'] = None
+            elif path == '/check_self_starting':
+                self.check_self_starting()
+            elif path == '/get_ip':
+                self.get_ip()
+            else:
+                self.json_response({'status': 'fail', 'msg': '未知的路径 {}'.format(path)})
+                return
 
     def do_POST(self):
         self.parse_params()
@@ -122,34 +134,50 @@ class MyHttpHandler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/html')
             self.send_header('WWW-Authenticate', 'Basic realm="pikaqiu"')
             self.end_headers()
-            self.wfile.write(self.authencate)
+            self.wfile.write(self.authenticate)
         else:
-            authorization = self.headers.get('Authorization', '')
-            if authorization and authorization[:6] == 'Basic ':
-                user, password = b64decode(authorization[6:]).split(b':', 1)
-                if user.decode() == global_config['username'] and password.decode() == global_config['password']:
-                    if path == '/user':
-                        self.add_user()
-                        return
-                    elif path == '/operation':
-                        self.add_operation()
-                        return
-                    elif path == '/timing':
-                        self.add_timing()
-                        return
-                    elif path == '/delete_timing':
-                        self.delete_timing()
-                        return
-                    elif path == 'starting':
-                        self.self_starting()
+            if 'Authorization' not in self.headers and not global_config['init']:
+                self.authenticate_response()
+                return
+            else:
+                if not global_config['init']:
+                    authorization = self.headers.get('Authorization', '')
+                    if authorization and authorization[:6] == 'Basic ':
+                        user, password = b64decode(authorization[6:]).split(b':', 1)
+                        if user.decode() != global_config['username'] or password.decode() != global_config['password']:
+                            self.authenticate_response()
+                            return
                     else:
-                        self.json_response({'status': 'fail', 'msg': '未知的路径 {}'.format(path)})
+                        self.authenticate_response()
                         return
-            self.send_response(401)
-            self.send_header('Content-type', 'text/html')
-            self.send_header('WWW-Authenticate', 'Basic realm="pikaqiu"')
-            self.end_headers()
-            self.wfile.write(self.authencate)
+
+                if path == '/user':
+                    self.add_user()
+                    return
+                elif path == '/operation':
+                    self.add_operation()
+                    return
+                elif path == '/timing':
+                    self.add_timing()
+                    return
+                elif path == '/delete_timing':
+                    self.delete_timing()
+                    return
+                elif path == '/starting':
+                    self.self_starting()
+                    return
+                elif path == '/shutdown':
+                    def kill_server(server):
+                        time.sleep(5)
+                        server.shutdown()
+
+                    kill_t = Thread(target=kill_server, args=(http_server,))
+                    self.json_response({'status': 'ok'})
+                    kill_t.start()
+                    return
+                else:
+                    self.json_response({'status': 'fail', 'msg': '未知的路径 {}'.format(path)})
+                    return
 
     def add_user(self):
         username = self.params.get('username')
@@ -176,27 +204,29 @@ class MyHttpHandler(BaseHTTPRequestHandler):
     def add_timing(self):
         operation = self.params.get('operation')
         op_time_str = self.params.get('time')
-        if operation not in ['shutdown', 'sleep']:
+        if operation not in ['shutdown', 'sleep', '关机', '睡眠']:
             self.json_response({'status': 'fail', 'msg': '操作类型为空'})
             return
         op_time = datetime.datetime.strptime(op_time_str, "%Y-%m-%dT%H:%M:%S.%fZ")
 
         true_time = op_time + datetime.timedelta(hours=8)
-        global_config['tasks'].append({'operation': operation, 'time': true_time.strftime("%Y-%m-%d %H:%M"), 'loading': False})
+        operation_chinese = '关机' if operation == 'shutdown' else '睡眠'
+        global_config['tasks'].append(
+            {'operation': operation_chinese, 'time': true_time.strftime("%Y-%m-%d %H:%M"), 'loading': False})
         self.json_response({'status': 'ok',
                             'time': true_time.strftime("%Y-%m-%d %H:%M"),
                             'operation': '关机' if operation == 'shutdown' else '睡眠'
                             })
         write_config()
-        if len(global_config['task']) == 1:
+        if len(global_config['tasks']) == 1:
             start_task_thread()
 
     def delete_timing(self):
         op_time_str = self.params.get('time')
         operation = self.params.get('operation')
-        if operation == '关机':
+        if operation in ['关机', 'shutdown']:
             operation = 'shutdown'
-        elif operation == '睡眠':
+        elif operation in ['睡眠', 'sleep']:
             operation = 'sleep'
         else:
             self.json_response({'status': 'fail', 'msg': '操作的类型为{}，不符合要求'.format(operation)})
@@ -210,7 +240,7 @@ class MyHttpHandler(BaseHTTPRequestHandler):
             task_time = datetime.datetime.strptime(task['time'], "%Y-%m-%d %H:%M")
             task_op = task['operation']
             if task_time.month == op_time.month and task_time.day == op_time.day and \
-               task_time.hour == op_time.hour and task_time.minute == op_time.minute:
+                    task_time.hour == op_time.hour and task_time.minute == op_time.minute:
                 if task_op == operation:
                     indexes.append(index)
         if not indexes:
@@ -230,12 +260,16 @@ class MyHttpHandler(BaseHTTPRequestHandler):
             res = create_shortcut()
             if res == True:
                 self.json_response({'status': 'ok'})
+                global_config['self_starting'] = True
+                write_config()
             else:
                 self.json_response({'status': 'fail', 'msg': '遇到错误: {}'.format(res)})
         else:
             res = delete_shortcut()
             if res == True:
                 self.json_response({'status': 'ok'})
+                global_config['self_starting'] = False
+                write_config()
             else:
                 self.json_response({'status': 'fail', 'msg': '遇到错误: {}'.format(res)})
 
@@ -245,6 +279,13 @@ class MyHttpHandler(BaseHTTPRequestHandler):
     def get_ip(self):
         all_ip = get_net_info()
         self.json_response({'status': 'ok', 'net': all_ip})
+
+    def authenticate_response(self):
+        self.send_response(401)
+        self.send_header('Content-type', 'text/html')
+        self.send_header('WWW-Authenticate', 'Basic realm="pikaqiu"')
+        self.end_headers()
+        self.wfile.write(self.authenticate)
 
     def json_response(self, message):
         self.send_response(200)
@@ -276,28 +317,30 @@ def exc_operation(command):
         if '0x65b' not in std_err:
             total_cmd = total_cmd + "&& powercfg -hibernate on"
 
-        res = subprocess.Popen(total_cmd, shell=True, stderr=subprocess.PIPE,
-                               stdout=subprocess.PIPE, bufsize=0)
+        subprocess.Popen(total_cmd, shell=True, stderr=subprocess.PIPE,
+                         stdout=subprocess.PIPE, bufsize=0)
 
     if command == 'shutdown':
-        res = subprocess.Popen("shutdown -s -t 0", shell=True, stderr=subprocess.PIPE,
-                               stdout=subprocess.PIPE, bufsize=0)
+        subprocess.Popen("shutdown -s -t 0", shell=True, stderr=subprocess.PIPE,
+                         stdout=subprocess.PIPE, bufsize=0)
 
 
 def is_auto_starting():
-    starting_path = r"C:\Users\%s\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup" % getpass.getuser()
+    starting_path = link_path
     starting_file = os.path.join(starting_path, 'easyControl.lnk')
-    return os.path.exists(starting_file)
+    is_auto = os.path.exists(starting_file)
+    if is_auto != global_config['self_starting']:
+        global_config['self_starting'] = is_auto
+        write_config()
+    return is_auto
 
 
 def create_shortcut():
-    to_path = r"C:\Users\%s\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup" % getpass.getuser()
-    # this_path = os.path.abspath(os.path.dirname(__file__))
-    # to_path = winshell.desktop()
+    to_path = link_path
     to_file = os.path.join(to_path, 'easyControl.lnk')
-    this_path = r"E:\pythonCode\code35\mini_program\qiangdan\dist\jphd.com.exe"
+    this_path = os.path.abspath(sys.executable)
     icon = this_path
-    work_dir = r"E:\pythonCode\code35\mini_program\qiangdan\dist"
+    work_dir = os.path.dirname(this_path)
     shell = Dispatch('WScript.Shell')
     shortcut = shell.CreateShortCut(to_file)
     shortcut.Targetpath = this_path
@@ -311,7 +354,7 @@ def create_shortcut():
 
 
 def delete_shortcut():
-    starting_path = r"C:\Users\%s\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup" % getpass.getuser()
+    starting_path = link_path
     starting_file = os.path.join(starting_path, 'easyControl.lnk')
     try:
         os.remove(starting_file)
@@ -331,26 +374,27 @@ def get_net_info():
     info = psutil.net_if_addrs()
     for k, v in info.items():
         if not v[0][1] == '127.0.0.1' and '169.254' not in v[1][1]:
-            print(k, v[0][1], v[1][1])
             netcard_info.append({'name': k, 'addr': 'http://{}:{}'.format(v[1][1], global_config['port'])})
     return netcard_info
 
 
-def is_admin():
-    try:
-        return ctypes.windll.shell32.IsUserAnAdmin()
-    except:
-        return False
-
-
 if __name__ == '__main__':
-    # http_server = HTTPServer(host, MyHttpHandler)
-    # print("Starting server, listen at: %s:%s" % host[:2])
-    # if global_config['init']:
-    #     t = Thread(target=open_browser, args=('http://127.0.0.1:' + str(global_config['port']),))
-    #     t.start()
-    # http_server.serve_forever()
-    # create_shortcut()
-    # operation_reg(True)
-    print(os.path.abspath(__file__))
+    first_port = global_config['port']
+    while True:
+        try:
+            http_server = HTTPServer(host, MyHttpHandler)
+            break
+        except OSError:
+            global_config['port'] += 1
+            host = ('0.0.0.0', global_config['port'])
 
+    if first_port != global_config['port']:
+        write_config()
+        global_config['error'] = '{}端口被占用，现在采用的是{}端口'.format(first_port, global_config['port'])
+    print("Starting server, listen at: %s:%s" % host[:2])
+    if not os.path.exists('config.dt') or first_port != global_config['port']:
+        t = Thread(target=open_browser, args=('http://127.0.0.1:' + str(global_config['port']),))
+        t.start()
+    http_server.serve_forever()
+    http_server.server_close()
+    os.listdir(os.path.abspath(os.path.dirname(__file__)))

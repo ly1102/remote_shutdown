@@ -1,216 +1,10 @@
 # -*- coding:utf-8 -*-
 # date: 2018-12-27 1:44
 """
-
-"""
-bootstrap4c_css = """
-/*
- *
- *
- *
- * Bootstrap 4 Component - Custom switch
- * Version: 1.0.11
- * Copyright (c) 2017-18 Martin Haubek
- *
- *
- *
- */
-.custom-switch .custom-switch-input {
-  display: none; }
-  .custom-switch .custom-switch-input, .custom-switch .custom-switch-input:after, .custom-switch .custom-switch-input:before,
-  .custom-switch .custom-switch-input *,
-  .custom-switch .custom-switch-input *:after,
-  .custom-switch .custom-switch-input *:before,
-  .custom-switch .custom-switch-input + .custom-switch-btn {
-    box-sizing: border-box; }
-    .custom-switch .custom-switch-input:selection, .custom-switch .custom-switch-input:after:selection, .custom-switch .custom-switch-input:before:selection,
-    .custom-switch .custom-switch-input *:selection,
-    .custom-switch .custom-switch-input *:after:selection,
-    .custom-switch .custom-switch-input *:before:selection,
-    .custom-switch .custom-switch-input + .custom-switch-btn:selection {
-      background: none; }
-  .custom-switch .custom-switch-input + .custom-switch-btn {
-    outline: 0;
-    display: inline-block;
-    position: relative;
-    -webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
-    cursor: pointer;
-    width: 68px;
-    height: 38px;
-    margin: 0;
-    padding: 4px;
-    background: #ced4da;
-    border-radius: 76px;
-    transition: all 300ms ease; }
-    .custom-switch .custom-switch-input + .custom-switch-btn:after, .custom-switch .custom-switch-input + .custom-switch-btn:before {
-      position: relative;
-      display: block;
-      content: "";
-      width: 30px;
-      height: 30px; }
-    .custom-switch .custom-switch-input + .custom-switch-btn:after {
-      left: 2px;
-      border-radius: 50%;
-      background: white;
-      transition: all 300ms ease; }
-    .custom-switch .custom-switch-input + .custom-switch-btn:before {
-      display: none; }
-  .custom-switch .custom-switch-input:checked + .custom-switch-btn {
-    background: #28a745; }
-    .custom-switch .custom-switch-input:checked + .custom-switch-btn:after {
-      left: 30px; }
-    .custom-switch .custom-switch-input:checked + .custom-switch-btn ~ .custom-switch-content-checked {
-      opacity: 1;
-      height: auto; }
-    .custom-switch .custom-switch-input:checked + .custom-switch-btn ~ .custom-switch-content-unchecked {
-      display: none;
-      opacity: 0;
-      height: 0; }
-  .custom-switch .custom-switch-input:not(:checked) + .custom-switch-btn ~ .custom-switch-content-checked {
-    display: none;
-    opacity: 0;
-    height: 0; }
-  .custom-switch .custom-switch-input:not(:checked) + .custom-switch-btn ~ .custom-switch-content-unchecked {
-    opacity: 1;
-    height: auto; }
-  .custom-switch .custom-switch-input[disabled] + .custom-switch-btn {
-    background: rgba(206, 212, 218, 0.6);
-    cursor: default; }
-  .custom-switch .custom-switch-input[disabled]:checked + .custom-switch-btn {
-    background: rgba(40, 167, 69, 0.4); }
-
-.custom-switch .custom-switch-form-text {
-  display: inline-block;
-  height: 38px;
-  margin-left: .5rem;
-  line-height: 38px;
-  vertical-align: top; }
-
-.custom-switch.custom-switch-label-io .custom-switch-input + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='68' height='38'%3E%3Ctext x='42.5' y='23.75' font-size='12px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EO%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch.custom-switch-label-io .custom-switch-input:checked + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='68' height='38'%3E%3Ctext x='18.13333' y='23.75' font-size='12px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EI%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch.custom-switch-label-onoff .custom-switch-input + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='68' height='38'%3E%3Ctext x='38.85714' y='23.75' font-size='12px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EOff%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch.custom-switch-label-onoff .custom-switch-input:checked + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='68' height='38'%3E%3Ctext x='9.71429' y='23.75' font-size='12px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EOn%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch.custom-switch-label-yesno .custom-switch-input + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='68' height='38'%3E%3Ctext x='38.85714' y='23.75' font-size='12px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3ENo%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch.custom-switch-label-yesno .custom-switch-input:checked + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='68' height='38'%3E%3Ctext x='9.71429' y='23.75' font-size='12px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EYes%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch.custom-switch-label-status .custom-switch-input + .custom-switch-btn {
-  width: 96px;
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='38'%3E%3Ctext x='38.85714' y='23.75' font-size='12px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EDisabled%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch.custom-switch-label-status .custom-switch-input:checked + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='38'%3E%3Ctext x='9.71429' y='23.75' font-size='12px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EEnabled%3C/text%3E%3C/svg%3E"); }
-  .custom-switch.custom-switch-label-status .custom-switch-input:checked + .custom-switch-btn:after {
-    left: 58px; }
-
-.custom-switch-sm .custom-switch-input + .custom-switch-btn {
-  width: 60px;
-  height: 31px;
-  padding: 3.26316px;
-  border-radius: 62px; }
-  .custom-switch-sm .custom-switch-input + .custom-switch-btn:after, .custom-switch-sm .custom-switch-input + .custom-switch-btn:before {
-    width: 25px;
-    height: 25px; }
-  .custom-switch-sm .custom-switch-input + .custom-switch-btn:after {
-    left: 1px; }
-
-.custom-switch-sm .custom-switch-input:checked + .custom-switch-btn:after {
-  left: 29px; }
-
-.custom-switch-sm .custom-switch-form-text {
-  height: 31px;
-  margin-left: .5rem;
-  line-height: 31px; }
-
-.custom-switch-sm.custom-switch-label-io .custom-switch-input + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='31'%3E%3Ctext x='37.5' y='19.375' font-size='11px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EO%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch-sm.custom-switch-label-io .custom-switch-input:checked + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='31'%3E%3Ctext x='16' y='19.375' font-size='11px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EI%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch-sm.custom-switch-label-onoff .custom-switch-input + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='31'%3E%3Ctext x='32.87671' y='19.375' font-size='11px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EOff%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch-sm.custom-switch-label-onoff .custom-switch-input:checked + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='31'%3E%3Ctext x='8.57143' y='19.375' font-size='11px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EOn%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch-sm.custom-switch-label-yesno .custom-switch-input + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='31'%3E%3Ctext x='32.87671' y='19.375' font-size='11px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3ENo%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch-sm.custom-switch-label-yesno .custom-switch-input:checked + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='31'%3E%3Ctext x='8.57143' y='19.375' font-size='11px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EYes%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch-sm.custom-switch-label-status .custom-switch-input + .custom-switch-btn {
-  width: 88px;
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='31'%3E%3Ctext x='32.87671' y='19.375' font-size='11px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EDisabled%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch-sm.custom-switch-label-status .custom-switch-input:checked + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='31'%3E%3Ctext x='8.57143' y='19.375' font-size='11px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EEnabled%3C/text%3E%3C/svg%3E"); }
-  .custom-switch-sm.custom-switch-label-status .custom-switch-input:checked + .custom-switch-btn:after {
-    left: 57px; }
-
-.custom-switch-xs .custom-switch-input + .custom-switch-btn {
-  width: 48px;
-  height: 24px;
-  padding: 2.52632px;
-  border-radius: 48px; }
-  .custom-switch-xs .custom-switch-input + .custom-switch-btn:after, .custom-switch-xs .custom-switch-input + .custom-switch-btn:before {
-    width: 18px;
-    height: 18px; }
-  .custom-switch-xs .custom-switch-input + .custom-switch-btn:after {
-    left: 1px; }
-
-.custom-switch-xs .custom-switch-input:checked + .custom-switch-btn:after {
-  left: 24px; }
-
-.custom-switch-xs .custom-switch-form-text {
-  height: 24px;
-  margin-left: .5rem;
-  line-height: 24px; }
-
-.custom-switch-xs.custom-switch-label-io .custom-switch-input + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='24'%3E%3Ctext x='27.42857' y='15' font-size='10px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EO%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch-xs.custom-switch-label-io .custom-switch-input:checked + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='24'%3E%3Ctext x='12.8' y='15' font-size='10px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EI%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch-xs.custom-switch-label-onoff .custom-switch-input + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='24'%3E%3Ctext x='25.6' y='15' font-size='10px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EOff%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch-xs.custom-switch-label-onoff .custom-switch-input:checked + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='24'%3E%3Ctext x='6.85714' y='15' font-size='10px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EOn%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch-xs.custom-switch-label-yesno .custom-switch-input + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='24'%3E%3Ctext x='25.6' y='15' font-size='10px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3ENo%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch-xs.custom-switch-label-yesno .custom-switch-input:checked + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='24'%3E%3Ctext x='6.85714' y='15' font-size='10px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EYes%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch-xs.custom-switch-label-status .custom-switch-input + .custom-switch-btn {
-  width: 76px;
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='76' height='24'%3E%3Ctext x='25.6' y='15' font-size='10px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EDisabled%3C/text%3E%3C/svg%3E"); }
-
-.custom-switch-xs.custom-switch-label-status .custom-switch-input:checked + .custom-switch-btn {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='76' height='24'%3E%3Ctext x='6.85714' y='15' font-size='10px' font-family='-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji' fill='%23fff'%3EEnabled%3C/text%3E%3C/svg%3E"); }
-  .custom-switch-xs.custom-switch-label-status .custom-switch-input:checked + .custom-switch-btn:after {
-    left: 52px; }
-
+the index.html
 """
 
-html = """
+html = """<!DOCTYPE html>
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -225,13 +19,18 @@ html = """
 <body>
 <div id="app" style="margin: auto">
     <template>
-        <div style="padding: 10px;background: #f8f8f9">
+        <div style="background: #f8f8f9">
             <Card title="操作" icon="ios-options" shadow
                   style="max-width: 500px; margin: auto">
-                <div slot="extra">
-                    <a href="https://github.com/ly1102/remote_shutdown" type="extra">
-                        <Icon type="logo-github" size="20"/>
-                    </a>
+                <div slot="extra" style="">
+                    <div>
+                        <a href="https://www.jianshu.com/p/efc20edafb13" target="_blank">
+                            <img class="ivu-icon" style="height: 19px;" alt="简书" src="/jianshu"></a>
+                        <a target="_blank" href="https://github.com/ly1102/remote_shutdown">
+                            <Icon type="logo-github" size="22"/>
+                        </a>
+                    </div>
+
                 </div>
 
                 <CellGroup @click="handleClickItem()">
@@ -242,19 +41,19 @@ html = """
                             </i-Button>
                         </Cell>
                     </template>
-                    <Cell title="立即关机">
-                        <i-Button type="error" slot="extra" icon="md-alert" @click="shutdown_now()">立即关机</i-Button>
-                    </Cell>
                     <Cell title="定时关机">
-                        <i-Button type="error" slot="extra" icon="md-alarm" @click="shutdown_timing()" ghost>定时关机
+                        <i-Button type="primary" slot="extra" icon="md-alarm" @click="shutdown_timing()" ghost>定时关机
                         </i-Button>
-                    </Cell>
-                    <Cell title="立即睡眠">
-                        <i-Button type="warning" slot="extra" icon="md-alert" @click="sleep_now()">立即睡眠</i-Button>
                     </Cell>
                     <Cell title="定时睡眠">
-                        <i-Button type="warning" slot="extra" icon="md-alarm" @click="sleep_timing()" ghost>定时睡眠
+                        <i-Button type="primary" slot="extra" icon="md-alarm" @click="sleep_timing()" ghost>定时睡眠
                         </i-Button>
+                    </Cell>
+                    <Cell title="立即关机">
+                        <i-Button type="primary" slot="extra" icon="md-alert" @click="shutdown_now()">立即关机</i-Button>
+                    </Cell>
+                    <Cell title="立即睡眠">
+                        <i-Button type="primary" slot="extra" icon="md-alert" @click="sleep_now()">立即睡眠</i-Button>
                     </Cell>
                     <Cell title="账号密码">
                         <i-Button type="primary" slot="extra" @click="set_user()">修改账号密码</i-Button>
@@ -267,7 +66,7 @@ html = """
                         <i-Button type="primary" slot="extra" @click="ip_modal=true">查看</i-Button>
                     </Cell>
                     <Cell title="关闭软件" label="点击后软件将关闭，网页会失去响应">
-                        <i-Button type="error" slot="extra" @click="shutdown_server()">关闭本软件</i-Button>
+                        <i-Button type="error" slot="extra" @click="shutdown_server()">{{ shutdown_info }}</i-Button>
                     </Cell>
                 </CellGroup>
             </Card>
@@ -331,9 +130,11 @@ html = """
     </template>
 
     <template>
-        <Modal title="查看可以访问的IP" v-model="ip_modal">
+        <Modal title="查看电脑所有可用网络地址" v-model="ip_modal">
             <div style="min-width:300px; margin: auto;">
-                <table style="width:300px;text-align: left;font-size:18px; margin: auto;">
+                <h6>用手机访问以下的链接，如果能打开本网页，则以后可以用这个链接控制电脑。</h6>
+                <h6>手机必须和电脑连接同一个路由器或者手机连接电脑发射的WiFi。</h6>
+                <table style="width:300px;text-align: left; margin: auto;">
                     <tr>
                         <th>网络名</th>
                         <th>访问地址</th>
@@ -365,7 +166,11 @@ html = """
             var this_ = this;
             setTimeout(function () {
                 this_.check_starting();
+                this_.get_ip_list();
             }, 800);
+            if (this.init.error !== null) {
+                alert(this.init.error);
+            }
         },
         data() {
             return {
@@ -392,7 +197,7 @@ html = """
                 color: '#ff9900',
                 check_submit_btn: 'warning',
                 timing_msg: '定时关机',
-                shutdown_info: '关闭软件',
+                shutdown_info: '关闭本软件',
             }
         },
         methods: {
@@ -444,16 +249,16 @@ html = """
                 if (this.now_operation === 'shutdown_server') {
                     axios.post('/shutdown', {})
                         .then(function (response) {
-                        console.log(response);
-                        if (response.data.status === 'ok') {
-                            this_.check_modal = false;
-                            this_.shutdown_info = "5s";
-                            this_.$Message.success('请求成功！软件在5秒后关闭。');
-                            this_.refresh_shutdown(5, this_);
-                        } else {
-                            alert(response.data.msg);
-                        }
-                    }).catch(function (error) {
+                            console.log(response);
+                            if (response.data.status === 'ok') {
+                                this_.check_modal = false;
+                                this_.shutdown_info = "5s";
+                                this_.$Message.success('请求成功！软件在5秒后关闭。');
+                                this_.refresh_shutdown(5, this_);
+                            } else {
+                                alert(response.data.msg);
+                            }
+                        }).catch(function (error) {
                         console.log(error);
                         alert('请求遇到了错误:' + error);
                     });
@@ -476,14 +281,15 @@ html = """
 
                 this.modal_loading = false;
             },
-            refresh_shutdown(seconds, this_){
+            refresh_shutdown(seconds, this_) {
                 this_.shutdown_info = seconds + 's';
-                if(seconds === 0){
+                if (seconds === 0) {
                     this_.shutdown_info = '软件已关闭';
-                }else{
+                } else {
                     setTimeout(function () {
-                        this_.refresh_shutdown(seconds-1);
-                    }, 1000);
+                            this_.refresh_shutdown(seconds - 1, this_);
+                        }
+                        , 1000);
                 }
             },
             shutdown_timing() {
@@ -522,13 +328,14 @@ html = """
             },
             submit_user() {
                 this.modal_loading = true;
+                var this_ = this;
                 axios.post('/user', {
                     username: this.username,
                     password: this.password,
                 }).then(function (response) {
                     console.log(response);
                     if (response.data.status === 'ok') {
-                        this.user_modal = false;
+                        this_.user_modal = false;
                         this_.$Message.success('账号密码已经成功修改！');
                     } else {
                         alert(response.data.msg);
@@ -542,10 +349,8 @@ html = """
 
             switch_change() {
                 this.switch_loading = true;
-                console.log(this.init.self_starting);
                 var this_ = this;
                 if (!this.init.self_starting) {
-                    alert(123);
                     axios.post('/starting', {
                         self_starting: this.init.self_starting,
                     }).then(function (response) {
@@ -584,7 +389,21 @@ html = """
                 }
             },
 
-
+            get_ip_list() {
+                var this_ = this;
+                axios.get('/get_ip')
+                    .then(function (response) {
+                        console.log(response);
+                        if (response.data.status === 'ok') {
+                            this_.ip_info = response.data.net.slice(0);
+                        } else {
+                            alert(response.data.msg);
+                        }
+                    }).catch(function (error) {
+                    console.log(error);
+                    alert('请求遇到了错误:' + error);
+                });
+            },
             check_starting() {
                 this.switch_loading = true;
                 var this_ = this;
@@ -604,7 +423,6 @@ html = """
         }
     })
 </script>
-</html>
-"""
+</html>"""
 
-
+jianshu = b'\x00\x00\x01\x00\x01\x00  \x00\x00\x01\x00 \x00\xa8\x10\x00\x00\x16\x00\x00\x00(\x00\x00\x00 \x00\x00\x00@\x00\x00\x00\x01\x00 \x00\x00\x00\x00\x00\x00\x10\x00\x00\x12\x0b\x00\x00\x12\x0b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00Id\xed\x1cHa\xe6\xa6H`\xe6\xe6H`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe6\xe6Ha\xe6\xa6Id\xed\x1c\x00\x00\x00\x00Id\xed\x1cHa\xe5\xedH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffHa\xe5\xedId\xed\x1cHa\xe6\xa6H`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffHa\xe6\xa6H`\xe6\xe6H`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe6\xe6H`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\x8a\x99\xee\xff\x9a\xa7\xf0\xffj}\xe9\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffMd\xe5\xff\x9a\xa7\xf0\xff\xa0\xad\xf1\xff\x9c\xa9\xf1\xffx\x89\xeb\xffIa\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xc2\xca\xf6\xff\xff\xff\xff\xff\xf4\xf6\xfd\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff}\x8e\xec\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xcb\xd2\xf7\xffKc\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xc2\xca\xf6\xff\xff\xff\xff\xff\xfd\xfd\xfe\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffi}\xe9\xff\xa1\xad\xf1\xff\xa3\xaf\xf1\xff\xd1\xd7\xf8\xff\xff\xff\xff\xff\xff\xff\xff\xff\x91\xa0\xef\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xc2\xca\xf6\xff\xff\xff\xff\xff\xfd\xfd\xfe\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffVl\xe7\xff\xff\xff\xff\xff\xff\xff\xff\xff\xba\xc3\xf5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xc2\xca\xf6\xff\xff\xff\xff\xff\xfd\xfd\xfe\xffH`\xe5\xffH`\xe5\xff\x8e\x9d\xee\xff\xfe\xfe\xfe\xff\xfe\xfe\xfe\xff\xfe\xfe\xfe\xff\xfe\xfe\xfe\xff\xfe\xfe\xfe\xff\xfe\xfe\xfe\xff\xfe\xfe\xfe\xff\xf1\xf3\xfd\xff\xc2\xca\xf6\xffdx\xe9\xffH`\xe5\xffH`\xe5\xffIa\xe5\xff\xff\xff\xff\xff\xff\xff\xff\xff\xbd\xc6\xf5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xc2\xca\xf6\xff\xff\xff\xff\xff\xfd\xfd\xfe\xffH`\xe5\xffH`\xe5\xff\x8f\x9d\xef\xff\xff\xff\xff\xff\xff\xff\xff\xff\xc9\xd0\xf7\xff\xa6\xb1\xf2\xff\xa6\xb1\xf2\xff\xa6\xb1\xf2\xff\xad\xb8\xf3\xff\xed\xf0\xfc\xff\xff\xff\xff\xff\xef\xf1\xfc\xff]r\xe8\xffH`\xe5\xffIa\xe5\xff\xff\xff\xff\xff\xff\xff\xff\xff\xbd\xc6\xf5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xc2\xca\xf6\xff\xff\xff\xff\xff\xfd\xfd\xfe\xffH`\xe5\xffH`\xe5\xff\x8f\x9d\xef\xff\xff\xff\xff\xff\xff\xff\xff\xff\x91\xa0\xef\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\x92\xa0\xef\xff\xff\xff\xff\xff\xff\xff\xff\xff\x9e\xaa\xf1\xffH`\xe5\xffIa\xe5\xff\xff\xff\xff\xff\xff\xff\xff\xff\xbd\xc6\xf5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xc2\xca\xf6\xff\xff\xff\xff\xff\xfd\xfd\xfe\xffH`\xe5\xffH`\xe5\xff\x8f\x9d\xef\xff\xff\xff\xff\xff\xff\xff\xff\xff\x93\xa1\xef\xffIa\xe5\xffIa\xe5\xffIa\xe5\xffIa\xe5\xff\x87\x97\xee\xff\xff\xff\xff\xff\xff\xff\xff\xff\xb9\xc2\xf5\xffH`\xe5\xffIa\xe5\xff\xff\xff\xff\xff\xff\xff\xff\xff\xbd\xc6\xf5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xc2\xca\xf6\xff\xff\xff\xff\xff\xfd\xfd\xfe\xffH`\xe5\xffH`\xe5\xff\x8f\x9d\xef\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xb8\xc1\xf5\xffH`\xe5\xffIa\xe5\xff\xff\xff\xff\xff\xff\xff\xff\xff\xbd\xc6\xf5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xc2\xca\xf6\xff\xff\xff\xff\xff\xfd\xfd\xfe\xffH`\xe5\xffH`\xe5\xff\x8f\x9d\xef\xff\xff\xff\xff\xff\xff\xff\xff\xff\xe0\xe4\xfa\xff\xc6\xcd\xf6\xff\xc6\xcd\xf6\xff\xc6\xcd\xf6\xff\xc6\xcd\xf6\xff\xd8\xdd\xf9\xff\xff\xff\xff\xff\xff\xff\xff\xff\xb7\xc1\xf4\xffH`\xe5\xffIa\xe5\xff\xff\xff\xff\xff\xff\xff\xff\xff\xbd\xc6\xf5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xc2\xca\xf6\xff\xff\xff\xff\xff\xfd\xfd\xfe\xffH`\xe5\xffH`\xe5\xff\x8f\x9d\xef\xff\xff\xff\xff\xff\xff\xff\xff\xff\x9b\xa8\xf0\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\x81\x91\xed\xff\xff\xff\xff\xff\xff\xff\xff\xff\xb7\xc0\xf4\xffH`\xe5\xffIa\xe5\xff\xff\xff\xff\xff\xff\xff\xff\xff\xbd\xc6\xf5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xc2\xca\xf6\xff\xff\xff\xff\xff\xfd\xfd\xfe\xffH`\xe5\xffH`\xe5\xff\x8f\x9d\xef\xff\xff\xff\xff\xff\xff\xff\xff\xff\x9b\xa8\xf0\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\x81\x91\xed\xff\xff\xff\xff\xff\xff\xff\xff\xff\xb6\xc0\xf4\xffH`\xe5\xffIa\xe5\xff\xff\xff\xff\xff\xff\xff\xff\xff\xbd\xc6\xf5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xc2\xca\xf6\xff\xff\xff\xff\xff\xfd\xfd\xfe\xffH`\xe5\xffH`\xe5\xff\x8f\x9d\xef\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xb5\xbf\xf4\xffH`\xe5\xffIa\xe5\xff\xff\xff\xff\xff\xff\xff\xff\xff\xbd\xc6\xf5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xc2\xca\xf6\xff\xff\xff\xff\xff\xfd\xfd\xfe\xffH`\xe5\xffH`\xe5\xff\x85\x95\xed\xff\xe5\xe8\xfb\xff\xe5\xe8\xfb\xff\xe5\xe8\xfb\xff\xe5\xe8\xfb\xff\xe5\xe8\xfb\xff\xe5\xe8\xfb\xff\xe5\xe8\xfb\xff\xe5\xe8\xfb\xff\xe5\xe8\xfb\xff\xe5\xe8\xfb\xff\xa5\xb1\xf2\xffH`\xe5\xffIa\xe5\xff\xff\xff\xff\xff\xff\xff\xff\xff\xbd\xc6\xf5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffh|\xe9\xffz\x8b\xec\xffz\x8c\xec\xff\xb4\xbe\xf4\xff\xca\xd1\xf7\xff\xa7\xb2\xf2\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffIa\xe5\xff\xff\xff\xff\xff\xff\xff\xff\xff\xbd\xc6\xf5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff`u\xe8\xff\xff\xff\xff\xff\xff\xff\xff\xff\xbc\xc5\xf5\xffm\x80\xea\xff\x98\xa5\xf0\xff\x98\xa5\xf0\xff\x98\xa5\xf0\xff\x98\xa5\xf0\xff\x98\xa5\xf0\xff\x98\xa5\xf0\xff\x98\xa5\xf0\xff\x98\xa5\xf0\xff\x98\xa5\xf0\xff\x98\xa5\xf0\xff\x98\xa5\xf0\xff\x99\xa7\xf0\xff\xff\xff\xff\xff\xff\xff\xff\xff\xbd\xc6\xf5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xbc\xc5\xf5\xff\xff\xff\xff\xff\xf5\xf6\xfd\xff_t\xe8\xff\xcf\xd5\xf8\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xbd\xc6\xf5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xa0\xad\xf1\xffTj\xe6\xff\x7f\x90\xec\xff\xff\xff\xff\xff\xfc\xfd\xfe\xff}\x8e\xec\xffH`\xe5\xff\xab\xb6\xf3\xff\xc0\xc8\xf6\xff\xc0\xc8\xf6\xff\xc0\xc8\xf6\xff\xca\xd1\xf7\xff\xe1\xe5\xfa\xff\xc0\xc8\xf6\xff\xc0\xc8\xf6\xff\xc0\xc8\xf6\xff\xc0\xc8\xf6\xff\xc0\xc8\xf6\xff\xc0\xc8\xf6\xff\xc0\xc8\xf6\xff\xc0\xc8\xf6\xff\xc0\xc8\xf6\xff\x95\xa3\xf0\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xfc\xfd\xfe\xff\xf5\xf6\xfd\xff\xad\xb8\xf3\xffTj\xe6\xffMd\xe5\xffH`\xe5\xff\x7f\x90\xec\xff\xe8\xeb\xfb\xff\xe1\xe5\xfa\xff\\r\xe7\xffH`\xe5\xffu\x87\xeb\xff\xff\xff\xff\xff\xbc\xc5\xf5\xffQh\xe6\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xcb\xd2\xf7\xff\xf7\xf8\xfd\xff\xc4\xcb\xf6\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xa3\xaf\xf1\xff\xfa\xfb\xfe\xff\xff\xff\xff\xff\xce\xd4\xf8\xffOf\xe6\xffH`\xe5\xff\xba\xc3\xf5\xff\xff\xff\xff\xff\xf5\xf6\xfd\xffNe\xe5\xffH`\xe5\xffau\xe8\xff\xee\xf0\xfc\xff\xff\xff\xff\xff\xdd\xe2\xfa\xffYn\xe7\xffH`\xe5\xffMd\xe5\xff\xf7\xf8\xfd\xff\xff\xff\xff\xff\xad\xb8\xf3\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffm\x80\xea\xff\xf4\xf6\xfd\xff\xff\xff\xff\xff\xd7\xdc\xf9\xff\x99\xa7\xf0\xff\xf6\xf7\xfd\xff\xff\xff\xff\xff\xd8\xdd\xf9\xff\x8f\x9d\xef\xff\x94\xa2\xef\xff\x96\xa3\xf0\xfffz\xe9\xff\xdd\xe2\xfa\xff\xff\xff\xff\xff\xde\xe2\xfa\xff\x99\xa7\xf0\xff\xb2\xbc\xf4\xff\xff\xff\xff\xff\xff\xff\xff\xff\xb2\xbc\xf4\xff\x99\xa7\xf0\xff\x99\xa7\xf0\xffz\x8b\xec\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff}\x8e\xec\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\x9c\xa9\xf1\xff_t\xe8\xff\xfa\xfb\xfe\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xf1\xf3\xfd\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xcc\xd3\xf7\xff\xff\xff\xff\xff\xff\xff\xff\xffi|\xe9\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\xba\xc3\xf5\xff\xff\xff\xff\xff\xff\xff\xff\xff\x88\x98\xee\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\x8c\x9b\xee\xff\xff\xff\xff\xff\xff\xff\xff\xff\x91\x9f\xef\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xff\x7f\x90\xec\xff\xff\xff\xff\xff\xff\xff\xff\xff\x9e\xaa\xf1\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe6\xe6H`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffJa\xe5\xffJa\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe6\xe6Ha\xe6\xa6H`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffHa\xe6\xa6Id\xed\x1cHa\xe5\xedH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffHa\xe5\xedId\xed\x1c\x00\x00\x00\x00Id\xed\x1cHa\xe6\xa6H`\xe6\xe6H`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe5\xffH`\xe6\xe6Ha\xe6\xa6Id\xed\x1c\x00\x00\x00\x00\x80\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x01'

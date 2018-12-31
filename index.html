@@ -12,13 +12,18 @@
 <body>
 <div id="app" style="margin: auto">
     <template>
-        <div style="padding: 10px;background: #f8f8f9">
+        <div style="background: #f8f8f9">
             <Card title="操作" icon="ios-options" shadow
                   style="max-width: 500px; margin: auto">
-                <div slot="extra">
-                    <a href="https://github.com/ly1102/remote_shutdown" type="extra">
-                        <Icon type="logo-github" size="20"/>
-                    </a>
+                <div slot="extra" style="">
+                    <div>
+                        <a href="https://www.jianshu.com/p/efc20edafb13" target="_blank">
+                            <img class="ivu-icon" style="height: 19px;" alt="简书" src="/jianshu"></a>
+                        <a target="_blank" href="https://github.com/ly1102/remote_shutdown">
+                            <Icon type="logo-github" size="22"/>
+                        </a>
+                    </div>
+
                 </div>
 
                 <CellGroup @click="handleClickItem()">
@@ -29,19 +34,19 @@
                             </i-Button>
                         </Cell>
                     </template>
-                    <Cell title="立即关机">
-                        <i-Button type="error" slot="extra" icon="md-alert" @click="shutdown_now()">立即关机</i-Button>
-                    </Cell>
                     <Cell title="定时关机">
-                        <i-Button type="error" slot="extra" icon="md-alarm" @click="shutdown_timing()" ghost>定时关机
+                        <i-Button type="primary" slot="extra" icon="md-alarm" @click="shutdown_timing()" ghost>定时关机
                         </i-Button>
-                    </Cell>
-                    <Cell title="立即睡眠">
-                        <i-Button type="warning" slot="extra" icon="md-alert" @click="sleep_now()">立即睡眠</i-Button>
                     </Cell>
                     <Cell title="定时睡眠">
-                        <i-Button type="warning" slot="extra" icon="md-alarm" @click="sleep_timing()" ghost>定时睡眠
+                        <i-Button type="primary" slot="extra" icon="md-alarm" @click="sleep_timing()" ghost>定时睡眠
                         </i-Button>
+                    </Cell>
+                    <Cell title="立即关机">
+                        <i-Button type="primary" slot="extra" icon="md-alert" @click="shutdown_now()">立即关机</i-Button>
+                    </Cell>
+                    <Cell title="立即睡眠">
+                        <i-Button type="primary" slot="extra" icon="md-alert" @click="sleep_now()">立即睡眠</i-Button>
                     </Cell>
                     <Cell title="账号密码">
                         <i-Button type="primary" slot="extra" @click="set_user()">修改账号密码</i-Button>
@@ -54,7 +59,7 @@
                         <i-Button type="primary" slot="extra" @click="ip_modal=true">查看</i-Button>
                     </Cell>
                     <Cell title="关闭软件" label="点击后软件将关闭，网页会失去响应">
-                        <i-Button type="error" slot="extra" @click="shutdown_server()">关闭本软件</i-Button>
+                        <i-Button type="error" slot="extra" @click="shutdown_server()">{{ shutdown_info }}</i-Button>
                     </Cell>
                 </CellGroup>
             </Card>
@@ -118,9 +123,11 @@
     </template>
 
     <template>
-        <Modal title="查看可以访问的IP" v-model="ip_modal">
+        <Modal title="查看电脑所有可用网络地址" v-model="ip_modal">
             <div style="min-width:300px; margin: auto;">
-                <table style="width:300px;text-align: left;font-size:18px; margin: auto;">
+                <h6>用手机访问以下的链接，如果能打开本网页，则以后可以用这个链接控制电脑。</h6>
+                <h6>手机必须和电脑连接同一个路由器或者手机连接电脑发射的WiFi。</h6>
+                <table style="width:300px;text-align: left; margin: auto;">
                     <tr>
                         <th>网络名</th>
                         <th>访问地址</th>
@@ -152,17 +159,22 @@
             var this_ = this;
             setTimeout(function () {
                 this_.check_starting();
+                this_.get_ip_list();
             }, 800);
+            if (this.init.error !== null) {
+                alert(this.init.error);
+            }
         },
         data() {
             return {
                 init: {
-                    init: true,
+                    init: false,
                     tasks: [
-                        {'operation': '关机', 'time': "12-29 00:00", 'loading': false},
+                        {'operation': '关机', 'time': "01-01 02:00", 'loading': false},
                         {'operation': '睡眠', 'time': "12-31 10:00", 'loading': false},
                     ],
                     self_starting: false,
+                    error: null,
                 },
                 ip_info: [
                     {'name': '本地连接', 'addr': 'http://127.0.0.1:8888'},
@@ -186,7 +198,7 @@
                 color: '#ff9900',
                 check_submit_btn: 'warning',
                 timing_msg: '定时关机',
-                shutdown_info: '关闭软件',
+                shutdown_info: '关闭本软件',
             }
         },
         methods: {
@@ -238,16 +250,16 @@
                 if (this.now_operation === 'shutdown_server') {
                     axios.post('/shutdown', {})
                         .then(function (response) {
-                        console.log(response);
-                        if (response.data.status === 'ok') {
-                            this_.check_modal = false;
-                            this_.shutdown_info = "5s";
-                            this_.$Message.success('请求成功！软件在5秒后关闭。');
-                            this_.refresh_shutdown(5, this_);
-                        } else {
-                            alert(response.data.msg);
-                        }
-                    }).catch(function (error) {
+                            console.log(response);
+                            if (response.data.status === 'ok') {
+                                this_.check_modal = false;
+                                this_.shutdown_info = "5s";
+                                this_.$Message.success('请求成功！软件在5秒后关闭。');
+                                this_.refresh_shutdown(5, this_);
+                            } else {
+                                alert(response.data.msg);
+                            }
+                        }).catch(function (error) {
                         console.log(error);
                         alert('请求遇到了错误:' + error);
                     });
@@ -270,14 +282,15 @@
 
                 this.modal_loading = false;
             },
-            refresh_shutdown(seconds, this_){
+            refresh_shutdown(seconds, this_) {
                 this_.shutdown_info = seconds + 's';
-                if(seconds === 0){
+                if (seconds === 0) {
                     this_.shutdown_info = '软件已关闭';
-                }else{
+                } else {
                     setTimeout(function () {
-                        this_.refresh_shutdown(seconds-1);
-                    }, 1000);
+                            this_.refresh_shutdown(seconds - 1, this_);
+                        }
+                        , 1000);
                 }
             },
             shutdown_timing() {
@@ -316,13 +329,14 @@
             },
             submit_user() {
                 this.modal_loading = true;
+                var this_ = this;
                 axios.post('/user', {
                     username: this.username,
                     password: this.password,
                 }).then(function (response) {
                     console.log(response);
                     if (response.data.status === 'ok') {
-                        this.user_modal = false;
+                        this_.user_modal = false;
                         this_.$Message.success('账号密码已经成功修改！');
                     } else {
                         alert(response.data.msg);
@@ -336,10 +350,8 @@
 
             switch_change() {
                 this.switch_loading = true;
-                console.log(this.init.self_starting);
                 var this_ = this;
                 if (!this.init.self_starting) {
-                    alert(123);
                     axios.post('/starting', {
                         self_starting: this.init.self_starting,
                     }).then(function (response) {
@@ -378,7 +390,21 @@
                 }
             },
 
-
+            get_ip_list() {
+                var this_ = this;
+                axios.get('/get_ip')
+                    .then(function (response) {
+                        console.log(response);
+                        if (response.data.status === 'ok') {
+                            this_.ip_info = response.data.net.slice(0);
+                        } else {
+                            alert(response.data.msg);
+                        }
+                    }).catch(function (error) {
+                    console.log(error);
+                    alert('请求遇到了错误:' + error);
+                });
+            },
             check_starting() {
                 this.switch_loading = true;
                 var this_ = this;
