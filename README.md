@@ -4,5 +4,12 @@
 - 实现了简单的登录认证
 - 首次启动设置账号密码
 
+### requirements
+- winshell 
+- pywin32
+- psutil
+
+### 操作说明
+https://www.jianshu.com/p/efc20edafb13
 
 
